@@ -1,0 +1,62 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+
+       {% include 'home/pedidos.html' %}
+       
+        <!-- aqui vai um card -->
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Mesa mais atendida</h5>
+                  <span class="h1 font-weight-bold mb-0" style="font-size: 50px;">02</span><br>
+                  <span class="h2 font-weight-bold" style="">2ª mesa</span><br>
+                  <span class="h2 font-weight-bold mb-0" style="font-size: 30px;">01</span>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {% include "includes/footer.html" %}
+
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="{% static 'assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/chart.js/dist/Chart.extension.js' %}"></script>
+
+{% endblock javascripts %}
