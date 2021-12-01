@@ -31,13 +31,14 @@
               <span class="nav-link-text">Mesas</span>
             </a>
           </li>
+          
           <li class="nav-item">
-            <a class="nav-link {% if 'icons' in segment %} active {% endif %}" target="_blank" href="{% url 'enviapedido' %}">
+            <a class="nav-link {% if 'icons' in segment %} active {% endif %}" href="{% url 'financeiro' %}">
               <i class="ni ni-single-02 text-orange"></i>
-              <span class="nav-link-text">Acesso do Garçon</span>
+              <span class="nav-link-text">Financeiro</span>
             </a>
           </li>
-         
+          
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">
               <i class="ni ni-button-power text-red"></i>

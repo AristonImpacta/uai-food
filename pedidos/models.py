@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.functions import Coalesce
-from django.db.models import Sum, Value
+from django.db.models import Sum, Value, F
 from decimal import Decimal
 
 STATUS_CHOICES = (
@@ -11,8 +11,7 @@ STATUS_CHOICES = (
 
 STATUS_PEDIDO_CHOICES = (
       (1, "EM ANDAMENTO"),
-      (2, "PAGO"),
-      (3, "PRONTO")
+      (2, "PRONTO")
 
     )
 
@@ -23,6 +22,18 @@ MESAS_CHOICES = (
     (4, "MESA 04"),
     (5, "MESA 05")
   )
+
+FORMA_PAGTO_CHOICES = (
+      (1, "DINHEIRO"),
+      (2, "CARTÃO DÉBITO"),
+      (3, "CARTÃO CRÉDITO"),
+      (4, "PIX")
+    )
+
+STATUS_CAIXAS_CHOICES = (
+      (1, "PENDENTE"),
+      (2, "PAGO")
+    )
 
 class Categoria(models.Model):
   nome = models.CharField(max_length=100)
@@ -43,19 +54,19 @@ class Prato(models.Model):
   def __str__(self):
     return self.nome
 
-
 class Pedido(models.Model):
-  usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+  usuario = models.ForeignKey(User, related_name='usuario_pedido', on_delete=models.CASCADE)
   data = models.DateTimeField(auto_now_add=True)
   mesa = models.IntegerField(choices=MESAS_CHOICES)
   status = models.IntegerField(choices=STATUS_PEDIDO_CHOICES)
 
+  @property
   def get_total_pedido(self):
-    return self.itens_pedido.aggregate(total_pedido=Coalesce(Sum('valor'), Decimal(0)))['total_pedido']
+    return self.itens_pedido.aggregate(total_pedido=Coalesce(Sum(F('valor')*F('quantidade')), Decimal(0)))['total_pedido']
 
   def __str__(self):
     return ' '.join(['#Pedido', str(self.id), 'Mesa',str(self.mesa)])
-
+  
 class Estoque(models.Model):
     quantidade = models.IntegerField()
     status = models.BooleanField(choices=STATUS_CHOICES)
@@ -69,6 +80,17 @@ class ItemPedido(models.Model):
   pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name="itens_pedido")
   quantidade = models.IntegerField()
   valor = models.DecimalField(max_digits=5, decimal_places=2)
+  
+  def save(self):
+        self.valor = Prato.objects.only('valor').get(pk=self.prato.id).valor
+        super(ItemPedido, self).save()
 
   def __str__(self):
     return '#Pedido '+str(self.pedido.id)
+  
+
+class Caixa(models.Model):
+  pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE, related_name="caixa_pedido")
+  valor = models.DecimalField(max_digits=5, decimal_places=2)
+  status = models.BooleanField()
+  pagamento = models.IntegerField(choices=FORMA_PAGTO_CHOICES)

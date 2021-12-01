@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap_modal_forms',
     'authentication',
     'pedidos',
     'django.contrib.admin',
@@ -86,6 +87,14 @@ DATABASES = {
         'HOST': 'localhost'
     }
 }
+
+# Messages 
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
+}
+
 
 
 # Password validation
